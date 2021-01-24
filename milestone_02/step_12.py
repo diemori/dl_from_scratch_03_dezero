@@ -5,7 +5,10 @@ from step_11 import Variable, as_array
 class Function:
     def __call__(self, *inputs):
         xs = [x.data for x in inputs]
-        ys = self.forward(xs)
+        ys = self.forward(*xs)
+
+        if not isinstance(ys, tuple):
+            ys = (ys, )
 
         outputs = [Variable(as_array(y)) for y in ys]
 
@@ -19,16 +22,18 @@ class Function:
 
 
 class Add(Function):
-    def forward(self, xs):
-        x0, x1 = xs
+    def forward(self, x0, x1):
         y = x0 + x1
 
-        return (y, )
+        return y
+
+
+def add(x0, x1):
+    return Add()(x0, x1)
 
 
 if __name__ == "__main__":
     x0, x1 = Variable(np.array(2)), Variable(np.array(3))
-    f = Add()
-    y = f(x0, x1)
+    y = add(x0, x1)
 
     print(y.data)
