@@ -114,7 +114,6 @@ class Variable:
 
 class Function:
     def __call__(self, *inputs):
-        print(inputs)
         inputs = [as_variable(x) for x in inputs]
         xs = [x.data for x in inputs]
         ys = self.forward(*xs)
@@ -260,7 +259,7 @@ class Square(Function):
     @staticmethod
     def square(x0):
         return Square()(x0)
-        
+
 
 class Mul(Function):
     def forward(self, x0, x1):
@@ -273,6 +272,7 @@ class Mul(Function):
 
     @staticmethod
     def mul(x0, x1):
+        x1 = as_array(x1)
         return Mul()(x0, x1)
 
 
@@ -349,6 +349,7 @@ class Pow(Function):
 
 def setup_variable():
     Variable.__mul__ = Mul.mul
+    Variable.__rmul__ = Mul.mul
     Variable.__add__ = Add.add
     Variable.__radd__ = Add.add
     Variable.__neg__ = Neg.neg
